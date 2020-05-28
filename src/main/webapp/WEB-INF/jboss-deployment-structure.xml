@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+	<deployment>
+		<dependencies>
+			<module name="org.codehaus.jackson.jackson-jaxrs" />
+			<module name="org.codehaus.jackson.jackson-mapper-asl" />
+			<module name="org.codehaus.jackson.jackson-xc" />
+			<module name="org.apache.cxf" export="true" meta-inf="export" />
+			<module name="org.springframework.spring" export="true" meta-inf="export" />
+			<module name="org.jboss.ws.native.jbossws-native-core" />
+			<module name="org.apache.ws.security" />
+			<module name="org.apache.httpcomponents" />
+			<module name="org.apache.commons.codec" />
+			<module name="org.apache.commons.lang" />
+			<module name="org.apache.commons.configuration" slot="1.5" export="true" />
+			<module name="org.hibernate" />
+			<module name="deployment.banelco_infraestructura.jar" export="true" />
+			<module name="deployment.banelco_general.jar" export="true" />
+			<module name="deployment.banelco_business.jar" export="true" />
+		</dependencies>
+		<exclude-subsystems>
+			<subsystem name="weld" />
+		</exclude-subsystems>
+	</deployment>
+</jboss-deployment-structure>

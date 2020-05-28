@@ -1,0 +1,13 @@
+com.prismamp.consultas.web.swagger.host=10.123.4.186:8080
+
+transaccionesB24.url=http://10.10.32.45:8080/transacciones/
+transaccionesB24.connectiontimeout=5000
+transaccionesB24.receivetimeout=32000
+
+empresas.api.url=http://10.10.32.45:8080/empresas-api/servicios/
+empresas.api.connectiontimeout=5000
+empresas.api.receivetimeout=60000
+
+configuracion.api.url=http://10.123.4.186:8080/configuracion-api/api
+configuracion.api.connectiontimeout=30000
+configuracion.api.receivetimeout=60000

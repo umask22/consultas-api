@@ -1,0 +1,13 @@
+com.prismamp.consultas.web.swagger.host=consultas.prismamp.com
+
+transaccionesB24.url=https://transacciones.prismamp.com/transacciones/
+transaccionesB24.connectiontimeout=5000
+transaccionesB24.receivetimeout=32000
+
+empresas.api.url=https://interno.prismamp.com/empresas-api/servicios/
+empresas.api.connectiontimeout=5000
+empresas.api.receivetimeout=60000
+
+configuracion.api.url=https://configuracion.prismamp.com/configuracion-api/api
+configuracion.api.connectiontimeout=30000
+configuracion.api.receivetimeout=60000

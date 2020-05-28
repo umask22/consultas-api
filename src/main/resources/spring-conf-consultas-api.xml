@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:http="http://cxf.apache.org/transports/http/configuration"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:sec="http://cxf.apache.org/configuration/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                        http://www.springframework.org/schema/util 
+                        http://www.springframework.org/schema/util/spring-util-3.0.xsd
+						http://www.springframework.org/schema/aop 
+    					http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                        http://www.springframework.org/schema/cache 
+                        http://www.springframework.org/schema/cache/spring-cache.xsd    					
+						http://cxf.apache.org/configuration/security
+      					http://cxf.apache.org/schemas/configuration/security.xsd
+ 					    http://cxf.apache.org/transports/http/configuration 
+						http://cxf.apache.org/schemas/configuration/http-conf.xsd
+						http://www.springframework.org/schema/data/jpa
+                        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+	
+	<import resource="database/hibernate/hibernate-consultas-api.xml" />
+	
+	<context:component-scan base-package="com.prismamp.consultas.api" />
+	<context:annotation-config />
+	<context:property-placeholder location="classpath:consultas-api.properties" />
+	<jpa:repositories base-package="com.prismamp.consultas.api.repository.microservicios" 
+					  entity-manager-factory-ref="entityManagerFactoryConsultas" 
+					  transaction-manager-ref="transactionManagerConsultas" /> 
+<!-- 	<jpa:repositories base-package="com.prismamp.consultas.api.repository.pagos"  -->
+<!-- 					  entity-manager-factory-ref="entityManagerFactoryPagos"  -->
+<!-- 					  transaction-manager-ref="transactionManagerPagos" /> -->
+
+	<aop:aspectj-autoproxy />
+	
+	<!-- Cache Manager -->
+	<cache:annotation-driven/>		
+	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+		<property name="caches">
+			<set>
+				<bean name="rechazos" class="com.prismamp.consultas.api.repository.microservicios.SpringGuavaCacheAdapter">
+					<property name="expireAfterAccessInSeconds" value="3600" />
+					<property name="expireAfterWriteInSeconds" value="3600" />
+				</bean>
+				<bean name="conceptos" class="com.prismamp.consultas.api.repository.microservicios.SpringGuavaCacheAdapter">
+					<property name="expireAfterAccessInSeconds" value="3600" />
+					<property name="expireAfterWriteInSeconds" value="3600" />
+				</bean>
+				<bean name="concepto" class="com.prismamp.consultas.api.repository.microservicios.SpringGuavaCacheAdapter">
+					<property name="expireAfterAccessInSeconds" value="3600" />
+					<property name="expireAfterWriteInSeconds" value="3600" />
+				</bean>								
+			</set>
+		</property>
+	</bean>
+	
+	<!-- JAXRS providers -->
+	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider">
+		<property name="mapper" ref="jaxrsRestJacksonObjectMapper" />
+	</bean>
+	<!-- Jackson Mapper -->
+	<bean id="jaxrsRestJacksonObjectMapper" class="com.prismamp.consultas.api.util.CustomObjectMapper">
+	</bean>
+	<bean id="jaxrsRestJacksonJaxbIntrospector" class="org.codehaus.jackson.xc.JaxbAnnotationIntrospector">
+	</bean>
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject">
+			<bean
+				class="org.springframework.beans.factory.config.PropertyPathFactoryBean">
+				<property name="targetObject" ref="jaxrsRestJacksonObjectMapper" />
+				<property name="propertyPath" value="serializationConfig" />
+			</bean>
+		</property>
+		<property name="targetMethod" value="setAnnotationIntrospector" />
+		<property name="arguments">
+			<list>
+				<ref bean="jaxrsRestJacksonJaxbIntrospector" />
+			</list>
+		</property>
+	</bean>
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject">
+			<bean
+				class="org.springframework.beans.factory.config.PropertyPathFactoryBean">
+				<property name="targetObject" ref="jaxrsRestJacksonObjectMapper" />
+				<property name="propertyPath" value="deserializationConfig" />
+			</bean>
+		</property>
+		<property name="targetMethod" value="setAnnotationIntrospector" />
+		<property name="arguments">
+			<list>
+				<ref bean="jaxrsRestJacksonJaxbIntrospector" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="apiListingResourceJSON" class="io.swagger.jaxrs.listing.ApiListingResource"/>
+    <bean id="apiDeclarationProvider" class="io.swagger.jaxrs.listing.SwaggerSerializers"/>
+    <bean id="beanConfig" class="io.swagger.jaxrs.config.BeanConfig">
+        <property name="resourcePackage" value="com.prismamp.consultas.api" />
+		<property name="version" value="1.0.0" />
+		<property name="schemes" value="http, https" />
+		<property name="host" value="${com.prismamp.consultas.web.swagger.host}" />
+		<property name="basePath" value="/consultas-api/internal" />
+		<property name="title" value="CONSULTAS - API Rest" />
+		<property name="description" value="Endpoint Rest de CONSULTAS. De uso exclusivo de Prisma Medios de Pagos S.A. NO debe ser expuesto" />
+		<property name="scan" value="true" />
+	</bean>
+</beans>
